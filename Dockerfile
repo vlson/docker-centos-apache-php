@@ -48,6 +48,28 @@ RUN sed -i 's/#ServerName www.example.com:80/ServerName localhost:80/g' /usr/loc
 # 启动服务
 RUN /usr/local/apache/bin/httpd
 
+#安装PHP
+WORKDIR /package
+#下载PHP
+RUN wget http://hk1.php.net/get/php-5.6.32.tar.gz/from/this/mirror
+#安装依赖
+RUN yum -y install gcc gcc-c++ libxml2 libxml2-devel autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel  zlib zlib-devel glibc glibc-devel glib2 glib2-devel
+RUN tar zxvf php-5.6.32.tar.gz
+WORKDIR /package/php-5.6.32
+#编译
+RUN ./configure --prefix=/usr/local/php --with-apxs2=/usr/local/apache/bin/apxs --with-zlib --with-mysql --with-pdo-mysql --enable-mbstring --with-gd --with-png-dir=/usr/lib64 --with-jpeg-dir=/usr/lib64 --with-freetype-dir=/usr/lib64 --with-apxs2=/usr/local/apache/bin/apxs
+#安装
+RUN make 
+RUN make install
+
+#配置PHP与Apache的关联
+
+
+#拷贝配置文件到指定的目录：
+COPY ~/package/php/php.ini-development /usr/local/php/lib/php.ini
+
+RUN sed -i 's/#date.timezone=/date.timezone=PRC/g' /usr/local/php/lib/php.ini
+
 #复制服务启动脚本并设置权限
 ADD run.sh /usr/local/sbin/run.sh
 RUN chmod 755 /usr/local/sbin/run.sh
