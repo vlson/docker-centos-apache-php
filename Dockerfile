@@ -51,7 +51,7 @@ RUN /usr/local/apache/bin/httpd
 #安装PHP
 WORKDIR /package
 #下载PHP
-RUN wget http://hk1.php.net/get/php-5.6.32.tar.gz/from/this/mirror
+RUN wget https://github.com/vlson/centos-apache-php/raw/master/php-5.6.32.tar.gz
 #安装依赖
 RUN yum -y install gcc gcc-c++ libxml2 libxml2-devel autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel  zlib zlib-devel glibc glibc-devel glib2 glib2-devel
 RUN tar zxvf php-5.6.32.tar.gz
