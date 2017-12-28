@@ -66,7 +66,8 @@ RUN make install
 
 
 #拷贝配置文件到指定的目录：
-COPY ~/package/php/php.ini-development /usr/local/php/lib/php.ini
+WORKDIR /package/php-5.6.32
+RUN cp php.ini-development /usr/local/php/lib/php.ini
 
 RUN sed -i 's/#date.timezone=/date.timezone=PRC/g' /usr/local/php/lib/php.ini
 
