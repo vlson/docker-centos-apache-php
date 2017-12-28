@@ -63,13 +63,17 @@ RUN make
 RUN make install
 
 #配置PHP与Apache的关联
-
+#httpd.conf
+RUN sed -i '148a <FilesMatch "\.php$">\nSetHandler application/x-httpd-php\n</FilesMatch>' /usr/local/apache/conf/httpd.conf
 
 #拷贝配置文件到指定的目录：
 WORKDIR /package/php-5.6.32
 RUN cp php.ini-development /usr/local/php/lib/php.ini
+#设置时区
+RUN sed -i 's/;date.timezone =/date.timezone = PRC/g' /usr/local/php/lib/php.ini
 
-RUN sed -i 's/#date.timezone=/date.timezone=PRC/g' /usr/local/php/lib/php.ini
+#重启apache
+RUN /usr/local/apache/bin/apachectl -k restart
 
 #复制服务启动脚本并设置权限
 ADD run.sh /usr/local/sbin/run.sh
@@ -77,4 +81,5 @@ RUN chmod 755 /usr/local/sbin/run.sh
 #开放80端口
 EXPOSE 80
 CMD ["/usr/local/sbin/run.sh"]
+RUN /usr/local/apache/bin/apachectl -k restart
 
